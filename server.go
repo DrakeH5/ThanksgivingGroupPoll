@@ -21,17 +21,10 @@ func main() {
 }
 
 func returnAllThanks(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/getAllThanks" {
-		http.Error(w, "404 not found.", http.StatusNotFound)
-		return
+	fmt.Println(listOfThanks)
+	for i := 0; i < len(listOfThanks); i++ {
+		fmt.Fprintf(w, "I am thankful for %s\n", listOfThanks[i])
 	}
-
-	if r.Method != "GET" {
-		http.Error(w, "Method is not supported.", http.StatusNotFound)
-		return
-	}
-
-	fmt.Fprintf(w, "All Thanks: %s\n", listOfThanks)
 }
 
 func formHandler(w http.ResponseWriter, r *http.Request) {
