@@ -6,10 +6,12 @@ import (
 	"net/http"
 )
 
+var listOfThanks []string
+
 func main() {
 	fileServer := http.FileServer(http.Dir("./static"))
 	http.Handle("/", fileServer)
-	http.HandleFunc("/hello", helloHandler)
+	http.HandleFunc("/getAllThanks", returnAllThanks)
 	http.HandleFunc("/form", formHandler)
 
 	fmt.Printf("Starting server at port 8080\n")
@@ -18,8 +20,8 @@ func main() {
 	}
 }
 
-func helloHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/hello" {
+func returnAllThanks(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/getAllThanks" {
 		http.Error(w, "404 not found.", http.StatusNotFound)
 		return
 	}
@@ -29,7 +31,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "Hello!")
+	fmt.Fprintf(w, "All Thanks: %s\n", listOfThanks)
 }
 
 func formHandler(w http.ResponseWriter, r *http.Request) {
@@ -40,6 +42,8 @@ func formHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "POST request successful")
 	name := r.FormValue("name")
 	thankfulFor := r.FormValue("thankfulFor")
+
+	listOfThanks = append(listOfThanks, thankfulFor)
 
 	fmt.Fprintf(w, "\n You are %s\n", name)
 	fmt.Fprintf(w, "You're thankful for %s\n", thankfulFor)
